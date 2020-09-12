@@ -27,9 +27,9 @@ class AddRoleHandler @Inject constructor() : Handler() {
                 val channel = message.channel
                 val accessLevel = message.member!!.accessLevel
 
-                if (accessLevel < AccessLevel.ADMINISTRATOR)
+                if (accessLevel < AccessLevel.JUNIOR)
                     return@flatMap channel
-                        .sendMessage("Access Denied. Required Access Level is ${AccessLevel.ADMINISTRATOR}. Your Access Level is $accessLevel.")
+                        .sendMessage("Access Denied. Required Access Level is ${AccessLevel.JUNIOR}. Your Access Level is $accessLevel.")
                         .asMono()
 
                 if (message.mentionedMembers.isEmpty() or message.mentionedRoles.isEmpty())
@@ -55,10 +55,10 @@ class AddRoleHandler @Inject constructor() : Handler() {
                     allowedRoles.toFlux().flatMap { it.guild.addRoleToMember(member, it).asMono() }
                 }
 
-                log.info("[<@${message.author.id}>] Users: $sUsers; Granted: $sAllowed; Denied: $sDenied;")
+                log.info("[<@${message.author.id}>] Users: $sUsers; Allowed: $sAllowed; Denied: $sDenied;")
 
                 Flux.concat(pAnswer, pLogStaff, pAddRole)
             }
-            .subscribe()
+            .subscribe({}, { log.error(it) })
     }
 }

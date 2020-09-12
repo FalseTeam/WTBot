@@ -5,4 +5,4 @@ import team.false_.wtbot.Config
 import team.false_.wtbot.entities.AccessLevel
 
 val Role.requiredAccessLevel
-    get() = Config.REQUIRED_ACCESS_LEVELS.getOrDefault(this.idLong, AccessLevel.ADMINISTRATOR)
+    get() = Config.REQUIRED_ACCESS_LEVELS.getOrDefault(this.idLong, AccessLevel.IMPOSSIBLE)
