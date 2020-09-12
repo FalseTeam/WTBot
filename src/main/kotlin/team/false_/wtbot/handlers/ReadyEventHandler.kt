@@ -13,9 +13,6 @@ class ReadyEventHandler @Inject constructor() : Handler() {
 
     override fun subscribe(): Disposable {
         return manager.on<ReadyEvent>()
-            .next()
-            .subscribe {
-                log.info("Logged in as ${it.jda.selfUser.asTag}")
-            }
+            .subscribe { log.info("Logged in as ${it.jda.selfUser.asTag}") }
     }
 }

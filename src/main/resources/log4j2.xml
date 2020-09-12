@@ -9,17 +9,7 @@
                 <pattern>%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n</pattern>>
             </PatternLayout>
         </Console>
-        <RollingRandomAccessFile name="File-Audit" fileName="logs/audit.log" filePattern="logs/$${date:yyyy-MM}/audit-%d{yyyy-MM-dd}-%i.log.gz">
-            <PatternLayout>
-                <Pattern>%d %m%n</Pattern>
-            </PatternLayout>
-            <Policies>
-                <TimeBasedTriggeringPolicy/>
-                <SizeBasedTriggeringPolicy size="1 MB"/>
-            </Policies>
-            <DefaultRolloverStrategy max="10"/>
-        </RollingRandomAccessFile>
-        <RollingRandomAccessFile name="File-Log" fileName="logs/app.log" filePattern="logs/$${date:yyyy-MM}/app-%d{yyyy-MM-dd}-%i.log.gz">
+        <RollingRandomAccessFile name="File-Appender" fileName="logs/app.log" filePattern="logs/$${date:yyyy-MM}/app-%d{yyyy-MM-dd}-%i.log.gz">
             <PatternLayout>
                 <Pattern>%d %p %c{1.} [%t] %m%n</Pattern>
             </PatternLayout>
@@ -31,12 +21,9 @@
         </RollingRandomAccessFile>
     </Appenders>
     <Loggers>
-        <Logger name="team.false_" level="debug" additivity="false">
-            <AppenderRef ref="Console-Appender"/>
-        </Logger>
         <Root level="info">
             <AppenderRef ref="Console-Appender"/>
-<!--            <AppenderRef ref="File-Log"/>-->
+            <AppenderRef ref="File-Appender"/>
         </Root>
     </Loggers>
 </Configuration>

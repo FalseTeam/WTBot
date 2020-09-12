@@ -4,11 +4,13 @@ import org.apache.logging.log4j.LogManager
 import team.false_.wtbot.components.WorkerFactory
 
 object Main {
-    private val log = LogManager.getLogger()
+    internal val log = LogManager.getLogger()
+    lateinit var worker: Worker
+        private set
 
     @JvmStatic
     fun main(args: Array<String>) {
-        val worker = WorkerFactory.create().worker()
+        worker = WorkerFactory.create().worker()
 
         Runtime.getRuntime().addShutdownHook(Thread {
             log.info("Interrupt Signal Received")

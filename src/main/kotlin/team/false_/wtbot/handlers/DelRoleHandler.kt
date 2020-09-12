@@ -2,16 +2,18 @@ package team.false_.wtbot.handlers
 
 import club.minnced.jda.reactor.asMono
 import club.minnced.jda.reactor.on
+import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent
 import org.apache.logging.log4j.LogManager
 import reactor.core.Disposable
 import reactor.core.publisher.Flux
 import reactor.core.publisher.toFlux
 import team.false_.wtbot.entities.AccessLevel
-import team.false_.wtbot.helpers.accessLevel
-import team.false_.wtbot.helpers.isCommandChannel
-import team.false_.wtbot.helpers.requiredAccessLevel
-import team.false_.wtbot.helpers.staffLogs
+import team.false_.wtbot.exceptions.AccessDeniedException
+import team.false_.wtbot.exceptions.EmptyMentionsException
+import team.false_.wtbot.helpers.*
+import java.awt.Color
+import java.time.Instant
 import javax.inject.Inject
 
 class DelRoleHandler @Inject constructor() : Handler() {
@@ -23,42 +25,53 @@ class DelRoleHandler @Inject constructor() : Handler() {
         return manager.on<MessageReceivedEvent>()
             .map { it.message }
             .filter { it.channel.isCommandChannel && it.contentRaw.startsWith("!delrole") }
-            .flatMap { message ->
-                val channel = message.channel
-                val accessLevel = message.member!!.accessLevel
+            .flatMap { it ->
+                val accessLevel = it.member!!.accessLevel
 
                 if (accessLevel < AccessLevel.JUNIOR)
-                    return@flatMap channel
-                        .sendMessage("Access Denied. Required Access Level is ${AccessLevel.JUNIOR}. Your Access Level is $accessLevel.")
-                        .asMono()
+                    return@flatMap Flux.error(AccessDeniedException(AccessLevel.JUNIOR, accessLevel, it.channel))
 
-                if (message.mentionedMembers.isEmpty() or message.mentionedRoles.isEmpty())
-                    return@flatMap channel.sendMessage("Mentioned Members and Roles are required").asMono()
+                if (it.mentionedMembers.isEmpty() or it.mentionedRoles.isEmpty())
+                    return@flatMap Flux.error(EmptyMentionsException(it.channel))
 
-                val allowedRoles = message.mentionedRoles.filter { accessLevel >= it.requiredAccessLevel }
-                val deniedRoles = message.mentionedRoles.filter { accessLevel < it.requiredAccessLevel }
+                val allowedRoles = it.mentionedRoles.filter { accessLevel >= it.requiredAccessLevel }
+                val deniedRoles = it.mentionedRoles.filter { accessLevel < it.requiredAccessLevel }
 
-                val sUsers = message.mentionedUsers.joinToString(", ") { "<@${it.id}>" }
-                val sAllowed = allowedRoles.joinToString(", ") { "<@&${it.id}>" }
-                val sDenied = deniedRoles.joinToString(", ") { "<@&${it.id}>" }
+                val sUsers = it.mentionedUsers.joinToString(", ") { it.asMention }
+                val sAllowed = allowedRoles.joinToString(", ") { it.asMention }
+                val sDenied = deniedRoles.joinToString(", ") { it.asMention }
 
-                val text = ArrayList<String>(4)
-                    .apply { add("Subject: <@${message.author.id}>") }
+                val text = ArrayList<String>(3)
                     .apply { add("Users: $sUsers") }
                     .apply { if (sAllowed.isNotEmpty()) add("Removed Roles: $sAllowed") }
                     .apply { if (sDenied.isNotEmpty()) add("Not Removed Roles: $sDenied") }
                     .joinToString("\n")
 
-                val pAnswer = channel.sendMessage(text).asMono()
-                val pLogStaff = message.jda.staffLogs.sendMessage(text).asMono()
-                val pAddRole = message.mentionedMembers.toFlux().flatMap { member ->
-                    allowedRoles.toFlux().flatMap { it.guild.removeRoleFromMember(member, it).asMono() }
+                val pDelRole = it.mentionedMembers.toFlux().flatMap { member ->
+                    allowedRoles.toFlux().flatMap(member::delRole)
                 }
 
-                log.info("[<@${message.author.id}>] Users: $sUsers; Allowed: $sAllowed; Denied: $sDenied;")
+                val pAnswer = it.channel.sendMessage(
+                    EmbedBuilder()
+                        .setColor(Color(0, 200, 0))
+                        .setTitle("Success")
+                        .setDescription(text)
+                        .build()
+                ).asMono()
 
-                Flux.concat(pAnswer, pLogStaff, pAddRole)
+                val pLogStaff = it.jda.staffLogs.sendMessage(
+                    EmbedBuilder()
+                        .setTitle("Del Role")
+                        .setDescription(text)
+                        .setFooter(it.author.asTag, it.author.avatarUrl)
+                        .setTimestamp(Instant.now())
+                        .build()
+                ).asMono()
+
+                log.info("[<@${it.author.id}>] Users: $sUsers; Allowed: $sAllowed; Denied: $sDenied;")
+
+                Flux.concat(pDelRole, pAnswer, pLogStaff)
             }
-            .subscribe({}, { log.error(it) })
+            .subscribeDefault()
     }
 }

@@ -22,4 +22,8 @@ interface HandlersModule {
     @Binds
     @IntoSet
     fun accessLevelHandler(accessLevelHandler: AccessLevelHandler): Handler
+
+    @Binds
+    @IntoSet
+    fun verificationHandler(verificationHandler: VerificationHandler): Handler
 }
