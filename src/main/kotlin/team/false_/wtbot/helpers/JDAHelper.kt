@@ -4,21 +4,20 @@ import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.entities.User
 import net.dv8tion.jda.api.requests.restaction.MessageAction
-import team.false_.wtbot.Config
+import team.false_.wtbot.config.Channels
 import java.awt.Color
 import java.time.Instant
 
-val JDA.guild get() = this.getGuildById(Config.GUILD_ID)!!
-val JDA.staffLogs get() = this.getTextChannelById(Config.CHANNEL_LOG_STAFF_ID)!!
-val JDA.voiceLogs get() = this.getTextChannelById(Config.CHANNEL_LOG_VOICE_ID)!!
-val JDA.textLogs get() = this.getTextChannelById(Config.CHANNEL_LOG_TEXT_ID)!!
-val JDA.staffChannel get() = this.getTextChannelById(Config.CHANNEL_STAFF_ID)!!
-val JDA.exceptionsChannel get() = this.getTextChannelById(Config.CHANNEL_LOG_EXCEPTION_ID)!!
+val JDA.staffLogs get() = this.getTextChannelById(Channels.STAFF_LOGS)!!
+val JDA.voiceLogs get() = this.getTextChannelById(Channels.VOICE_CHANNELS)!!
+val JDA.textLogs get() = this.getTextChannelById(Channels.TEXT_CHANNELS)!!
+val JDA.devLogs get() = this.getTextChannelById(Channels.EXCEPTION_LOGS)!!
 
-fun JDA.logStaff(subject: User, title: String, description: String): MessageAction {
+fun JDA.logStaff(subject: User, title: String, description: String, color: Color? = null): MessageAction {
     return this.staffLogs.sendMessage(
         EmbedBuilder()
             .setTitle(title)
+            .setColor(color)
             .setDescription(description)
             .setFooter(subject.asTag, subject.avatarUrl)
             .setTimestamp(Instant.now())
@@ -27,7 +26,7 @@ fun JDA.logStaff(subject: User, title: String, description: String): MessageActi
 }
 
 fun JDA.logWarning(e: Throwable): MessageAction {
-    return this.exceptionsChannel.sendMessage(
+    return this.devLogs.sendMessage(
         EmbedBuilder()
             .setColor(Color(200, 200, 0))
             .setTitle("WARNING")
@@ -39,7 +38,7 @@ fun JDA.logWarning(e: Throwable): MessageAction {
 }
 
 fun JDA.logError(e: Throwable): MessageAction {
-    return this.exceptionsChannel.sendMessage(
+    return this.devLogs.sendMessage(
         EmbedBuilder()
             .setColor(Color(200, 0, 0))
             .setTitle("ERROR")

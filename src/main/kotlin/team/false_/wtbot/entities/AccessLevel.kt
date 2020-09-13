@@ -5,5 +5,5 @@ enum class AccessLevel {
     JUNIOR,
     STAFF,
     ADMINISTRATOR,
-    IMPOSSIBLE
+    UNREACHABLE
 }

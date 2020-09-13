@@ -20,9 +20,7 @@ inline fun <reified T : GenericEvent, R> ReactiveEventManager.onWithHandleError(
     return this.onWithHandleError(T::class.java, handler)
 }
 
-fun <T : GenericEvent, R> ReactiveEventManager.onWithHandleError(
-    clazz: Class<T>, handler: (T) -> Flux<R>
-): Flux<R> {
+fun <T : GenericEvent, R> ReactiveEventManager.onWithHandleError(clazz: Class<T>, handler: (T) -> Flux<R>): Flux<R> {
     return this.on(clazz).flatMap {
         handler(it).onErrorResume { e ->
             if (it is MessageReceivedEvent) {
@@ -31,14 +29,14 @@ fun <T : GenericEvent, R> ReactiveEventManager.onWithHandleError(
                     it.message.channel.sendWarning(e).submit()
                 } else {
                     Main.log.error(
-                        "[${e.javaClass.simpleName}] ${it.message.author.asMention} - ${it.message.contentRaw}",
-                        e
+                        "[${e.javaClass.simpleName}] ${it.message.author.asMention} - ${it.message.contentRaw}", e
                     )
                     it.message.channel.sendInternalError().submit()
                     it.jda.logError(e).submit()
                 }
             } else {
-                // todo
+                Main.log.error("[${e.javaClass.simpleName}] $it", e)
+                it.jda.logError(e).submit()
             }
             Flux.empty()
         }
