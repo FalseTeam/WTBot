@@ -4,26 +4,26 @@
         <Property name="log-path">PropertiesConfiguration</Property>
     </Properties>
     <Appenders>
-        <Console name="Console-Appender" target="SYSTEM_OUT">
+        <Console name="ConsoleAppender" target="SYSTEM_OUT">
             <PatternLayout>
-                <pattern>%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n</pattern>>
+                <pattern>[%t] %p %c{1} - %m%n</pattern>>
             </PatternLayout>
         </Console>
-        <RollingRandomAccessFile name="File-Appender" fileName="logs/app.log" filePattern="logs/$${date:yyyy-MM}/app-%d{yyyy-MM-dd}-%i.log.gz">
+        <RollingRandomAccessFile name="FileAppender" fileName="logs/wtbot.log" filePattern="logs/$${date:yyyy-MM}/wtbot-%d{yyyy-MM-dd}-%i.log.gz">
             <PatternLayout>
-                <Pattern>%d %p %c{1.} [%t] %m%n</Pattern>
+                <Pattern>%d [%t] [%p] [%c{1.}] %m%n</Pattern>
             </PatternLayout>
             <Policies>
                 <TimeBasedTriggeringPolicy/>
                 <SizeBasedTriggeringPolicy size="1 MB"/>
             </Policies>
-            <DefaultRolloverStrategy max="10"/>
+            <DefaultRolloverStrategy min="0" max="9"/>
         </RollingRandomAccessFile>
     </Appenders>
     <Loggers>
         <Root level="info">
-            <AppenderRef ref="Console-Appender"/>
-            <AppenderRef ref="File-Appender"/>
+            <AppenderRef ref="ConsoleAppender"/>
+            <AppenderRef ref="FileAppender"/>
         </Root>
     </Loggers>
 </Configuration>

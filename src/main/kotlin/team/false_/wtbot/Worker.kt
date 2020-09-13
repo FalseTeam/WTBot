@@ -3,22 +3,29 @@ package team.false_.wtbot
 import club.minnced.jda.reactor.ReactiveEventManager
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.JDABuilder
-import team.false_.wtbot.handlers.Handler
-import javax.inject.Inject
-import javax.inject.Singleton
+import team.false_.wtbot.handlers.*
+import kotlin.reflect.full.createInstance
 
-@Singleton
-class Worker @Inject constructor(handlers: Set<@JvmSuppressWildcards Handler>) {
-    private val manager: ReactiveEventManager = ReactiveEventManager()
-    val jda: JDA
+class Worker constructor(token: String) {
+    private val jda: JDA
 
     init {
-        handlers.forEach {
-            it.inject(manager)
-            it.subscribe()
-        }
-        jda = JDABuilder.createDefault(System.getenv("TOKEN"))
+        val manager = ReactiveEventManager()
+
+        setOf(
+            ReadyEventHandler::class,
+            VerificationHandler::class,
+            AccessLevelHandler::class,
+            AddRoleHandler::class,
+            DelRoleHandler::class,
+        ).forEach { it.createInstance().inject(manager).subscribe() }
+
+        jda = JDABuilder.createDefault(token)
             .setEventManager(manager)
             .build()
+    }
+
+    fun shutdown() {
+        jda.shutdown()
     }
 }

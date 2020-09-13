@@ -4,7 +4,9 @@ import team.false_.wtbot.entities.AccessLevel
 
 object Config {
     const val GUILD_ID: Long = 381730844588638208
-    const val CHANNEL_BOT_ID: Long = 708772058968096850
+
+    const val CHANNEL_BOT_ID: Long = 708772058968096850 // PROD
+//    const val CHANNEL_BOT_ID: Long = 753630798896431114 // DEV
 
     const val MESSAGE_ACCEPT_ID: Long = 737014451093635092
     const val ROLE_GREETING_ID: Long = 736461622456877106
