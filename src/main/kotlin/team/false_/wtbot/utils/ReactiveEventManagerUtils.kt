@@ -1,4 +1,4 @@
-package team.false_.wtbot.helpers
+package team.false_.wtbot.utils
 
 import club.minnced.jda.reactor.ReactiveEventManager
 import net.dv8tion.jda.api.events.GenericEvent

@@ -3,8 +3,6 @@ package team.false_.wtbot.config
 import team.false_.wtbot.entities.AccessLevel
 
 object Config {
-    const val COMMAND_CHANNEL = Channels.BOT
-
     fun accessLevel(roleId: Long) = when (roleId) {
         Roles.ADMINISTRATOR -> AccessLevel.ADMINISTRATOR
         Roles.STAFF -> AccessLevel.STAFF
