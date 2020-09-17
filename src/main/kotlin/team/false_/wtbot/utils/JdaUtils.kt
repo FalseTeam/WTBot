@@ -8,6 +8,7 @@ import net.dv8tion.jda.api.requests.restaction.MessageAction
 import team.false_.wtbot.config.Channels
 import team.false_.wtbot.config.Colors
 import team.false_.wtbot.config.Config
+import team.false_.wtbot.exceptions.WTBotException
 import java.time.Instant
 
 /*
@@ -78,10 +79,11 @@ fun MessageChannel.sendSuccess(text: String): MessageAction {
     )
 }
 
-fun MessageChannel.sendWarning(e: Throwable): MessageAction {
+fun MessageChannel.sendWarning(e: WTBotException): MessageAction {
     return this.sendMessage(
         EmbedBuilder()
             .setColor(Colors.WARNING)
+            .setTitle(e.title)
             .setDescription(e.localizedMessage)
             .build()
     )

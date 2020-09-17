@@ -10,7 +10,7 @@ import java.util.regex.Pattern
 import kotlin.random.Random
 
 class ColorRandomCommand : AdminCommand() {
-    val pattern = Pattern.compile("[0-9]+")
+    private val pattern = Pattern.compile("[0-9]+")
 
     override fun exec(it: Message): Flux<out Any> {
         val matcher = pattern.matcher(it.contentRaw)
