@@ -3,6 +3,7 @@ package team.false_.wtbot
 import club.minnced.jda.reactor.ReactiveEventManager
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.JDABuilder
+import net.dv8tion.jda.api.requests.GatewayIntent
 import team.false_.wtbot.handlers.MessageReceivedEventHandler
 import team.false_.wtbot.handlers.ReadyEventHandler
 import team.false_.wtbot.handlers.VerificationHandler
@@ -22,6 +23,7 @@ class Worker constructor(token: String) {
 
         jda = JDABuilder.createDefault(token)
             .setEventManager(manager)
+            .disableIntents(GatewayIntent.GUILD_MESSAGE_TYPING)
             .build()
     }
 
