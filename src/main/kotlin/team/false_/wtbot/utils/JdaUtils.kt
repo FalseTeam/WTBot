@@ -15,8 +15,6 @@ JDA Class
  */
 
 val JDA.staffLogs get() = this.getTextChannelById(Channels.STAFF_LOGS)!!
-val JDA.voiceLogs get() = this.getTextChannelById(Channels.VOICE_CHANNELS)!!
-val JDA.textLogs get() = this.getTextChannelById(Channels.TEXT_CHANNELS)!!
 val JDA.devLogs get() = this.getTextChannelById(Channels.EXCEPTION_LOGS)!!
 
 fun JDA.logStaff(subject: User, title: String, description: String, color: Int? = null): MessageAction {
@@ -26,18 +24,6 @@ fun JDA.logStaff(subject: User, title: String, description: String, color: Int? 
             .apply { color?.let(this::setColor) }
             .setDescription(description)
             .setFooter(subject.asTag, subject.avatarUrl)
-            .setTimestamp(Instant.now())
-            .build()
-    )
-}
-
-fun JDA.logWarning(e: Throwable): MessageAction {
-    return this.devLogs.sendMessage(
-        EmbedBuilder()
-            .setColor(Colors.WARNING)
-            .setTitle("WARNING")
-            .setDescription(e.localizedMessage)
-            .setFooter(e.javaClass.simpleName)
             .setTimestamp(Instant.now())
             .build()
     )
@@ -61,7 +47,7 @@ Member Class
 
 val Member.accessLevel get() = this.roles.map { it.idLong }.map(Config::accessLevel).toSet().maxOf { it }
 
-fun Member.exec(role: Role) = this.guild.addRoleToMember(this, role).asMono()
+fun Member.addRole(role: Role) = this.guild.addRoleToMember(this, role).asMono()
 fun Member.removeRole(role: Role) = this.guild.removeRoleFromMember(this, role).asMono()
 
 /*

@@ -5,7 +5,7 @@ import reactor.core.Disposable
 import reactor.core.publisher.Flux
 import team.false_.wtbot.config.Messages
 import team.false_.wtbot.config.Roles
-import team.false_.wtbot.utils.exec
+import team.false_.wtbot.utils.addRole
 import team.false_.wtbot.utils.subscribeOnAnyWithHandleError
 
 class VerificationHandler : Handler() {
@@ -13,7 +13,7 @@ class VerificationHandler : Handler() {
         return manager.subscribeOnAnyWithHandleError<MessageReactionAddEvent> { event ->
             Flux.just(event)
                 .filter { it.messageIdLong == Messages.ACCEPT_RULES }
-                .flatMap { it.member!!.exec(it.guild.getRoleById(Roles.LVL1)!!) }
+                .flatMap { it.member!!.addRole(it.guild.getRoleById(Roles.LVL1)!!) }
         }
     }
 }
