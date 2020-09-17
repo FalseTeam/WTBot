@@ -5,8 +5,8 @@ import net.dv8tion.jda.api.events.GenericEvent
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent
 import reactor.core.Disposable
 import reactor.core.publisher.Flux
-import team.false_.wtbot.Main
 import team.false_.wtbot.exceptions.WTBotException
+import team.false_.wtbot.log
 
 inline fun <reified T : GenericEvent> ReactiveEventManager.subscribeOnAnyWithHandleError(noinline handler: (T) -> Flux<Any>): Disposable {
     return this.onWithHandleError(T::class.java, handler).subscribe()
@@ -25,17 +25,17 @@ fun <T : GenericEvent, R> ReactiveEventManager.onWithHandleError(clazz: Class<T>
         handler(it).onErrorResume { e ->
             if (it is MessageReceivedEvent) {
                 if (e is WTBotException) {
-                    Main.log.warn("[${e.javaClass.simpleName}] ${it.message.author.asMention} - ${it.message.contentRaw}")
+                    log.warn("[${e.javaClass.simpleName}] ${it.message.author.asMention} - ${it.message.contentRaw}")
                     it.message.channel.sendWarning(e).submit()
                 } else {
-                    Main.log.error(
+                    log.error(
                         "[${e.javaClass.simpleName}] ${it.message.author.asMention} - ${it.message.contentRaw}", e
                     )
                     it.message.channel.sendInternalError().submit()
                     it.jda.logError(e).submit()
                 }
             } else {
-                Main.log.error("[${e.javaClass.simpleName}] $it", e)
+                log.error("[${e.javaClass.simpleName}] $it", e)
                 it.jda.logError(e).submit()
             }
             Flux.empty()

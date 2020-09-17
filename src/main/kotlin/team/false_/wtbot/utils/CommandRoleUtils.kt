@@ -7,8 +7,8 @@ import net.dv8tion.jda.api.entities.Role
 import net.dv8tion.jda.api.entities.User
 import reactor.core.publisher.Flux
 import reactor.core.publisher.toFlux
-import team.false_.wtbot.Main
 import team.false_.wtbot.config.Colors
+import team.false_.wtbot.log
 
 fun addRole(
     subject: User,
@@ -27,7 +27,7 @@ fun addRole(
         .apply { if (sDenied.isNotEmpty()) add("Not Granted Roles: $sDenied") }
         .joinToString("\n")
 
-    Main.log.info("[AddRole] ${subject.asMention} - [Users] $sUsers - [Allowed] $sAllowed - [Denied] $sDenied")
+    log.info("[AddRole] ${subject.asMention} - [Users] $sUsers - [Allowed] $sAllowed - [Denied] $sDenied")
 
     return Flux.concat(
         members.toFlux().flatMap { member -> rAllowed.toFlux().flatMap(member::addRole) },
@@ -53,7 +53,7 @@ fun removeRole(
         .apply { if (sDenied.isNotEmpty()) add("Not Removed Roles: $sDenied") }
         .joinToString("\n")
 
-    Main.log.info("[DelRole] ${subject.asMention} - [Users] $sUsers - [Allowed] $sAllowed - [Denied] $sDenied")
+    log.info("[DelRole] ${subject.asMention} - [Users] $sUsers - [Allowed] $sAllowed - [Denied] $sDenied")
 
     return Flux.concat(
         members.toFlux().flatMap { member -> rAllowed.toFlux().flatMap(member::removeRole) },
