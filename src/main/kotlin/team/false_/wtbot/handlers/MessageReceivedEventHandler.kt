@@ -5,9 +5,7 @@ import reactor.core.Disposable
 import reactor.core.publisher.Flux
 import team.false_.wtbot.config.Channels
 import team.false_.wtbot.exceptions.AccessDeniedException
-import team.false_.wtbot.handlers.commands.AccessLevelCommand
-import team.false_.wtbot.handlers.commands.ColorCommand
-import team.false_.wtbot.handlers.commands.ColorRandomCommand
+import team.false_.wtbot.handlers.commands.*
 import team.false_.wtbot.handlers.commands.roles.*
 import team.false_.wtbot.utils.accessLevel
 import team.false_.wtbot.utils.subscribeOnAnyWithHandleError
@@ -24,10 +22,12 @@ class MessageReceivedEventHandler : Handler() {
             "unvb" to UnBanVoiceCommand(),
             "unban" to UnBanChatVoiceCommand(),
         ),
-        Channels.TEST_CHANNEL to mapOf(
+        Channels.INPUT to mapOf(
             "color" to ColorCommand(),
             "random" to ColorRandomCommand(),
             "accesslevel" to AccessLevelCommand(),
+            "activity" to ActivityCommand(),
+            "status" to StatusCommand(),
         ),
     )
 

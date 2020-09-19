@@ -26,10 +26,10 @@ object Colors {
 
     // Logging
     const val ROLE_ADD = CYAN
-    const val ROLE_DEL = ORANGE
-    const val VOICE_CHANNEL_CONNECT = AQUAMARINE
-    const val VOICE_CHANNEL_CHANGE = YELLOW
-    const val VOICE_CHANNEL_DISCONNECT = SHADOW_BLUE
-    const val VOICE_SERVER_MUTE = PINK
-    const val VOICE_SERVER_UNMUTE = BLUE
+    const val ROLE_REMOVE = ORANGE
+    const val VOICE_JOIN = AQUAMARINE
+    const val VOICE_MOVE = YELLOW
+    const val VOICE_LEAVE = SHADOW_BLUE
+    const val VOICE_GUILD_MUTE = PINK
+    const val VOICE_GUILD_UNMUTE = BLUE
 }

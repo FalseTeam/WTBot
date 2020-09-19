@@ -5,7 +5,7 @@ import reactor.core.publisher.Flux
 import team.false_.wtbot.exceptions.EmptyMentionsException
 import team.false_.wtbot.handlers.commands.abstract.StaffCommand
 import team.false_.wtbot.utils.mentionedRolesAllowed
-import team.false_.wtbot.utils.mentionedRolesDenied
+import team.false_.wtbot.utils.mentionedRolesIgnored
 import team.false_.wtbot.utils.removeRole
 
 class RoleRemoveCommand : StaffCommand() {
@@ -18,7 +18,7 @@ class RoleRemoveCommand : StaffCommand() {
                 it.channel,
                 it.mentionedMembers,
                 it.mentionedRolesAllowed,
-                it.mentionedRolesDenied
+                it.mentionedRolesIgnored
             )
     }
 }

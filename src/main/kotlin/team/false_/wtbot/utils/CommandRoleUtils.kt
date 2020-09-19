@@ -5,59 +5,51 @@ import net.dv8tion.jda.api.entities.Member
 import net.dv8tion.jda.api.entities.MessageChannel
 import net.dv8tion.jda.api.entities.Role
 import net.dv8tion.jda.api.entities.User
+import org.reactivestreams.Publisher
 import reactor.core.publisher.Flux
 import reactor.core.publisher.toFlux
 import team.false_.wtbot.config.Colors
 import team.false_.wtbot.log
 
 fun addRole(
-    subject: User,
-    channel: MessageChannel,
-    members: List<Member>,
-    rAllowed: List<Role>,
-    rDenied: List<Role>
-): Flux<out Any> {
-    val sUsers = members.joinDefault()
-    val sAllowed = rAllowed.joinDefault()
-    val sDenied = rDenied.joinDefault()
-
-    val text = ArrayList<String>(3)
-        .apply { add("Users: $sUsers") }
-        .apply { if (sAllowed.isNotEmpty()) add("Granted Roles: $sAllowed") }
-        .apply { if (sDenied.isNotEmpty()) add("Not Granted Roles: $sDenied") }
-        .joinToString("\n")
-
-    log.info("[AddRole] ${subject.asMention} - [Users] $sUsers - [Allowed] $sAllowed - [Denied] $sDenied")
-
-    return Flux.concat(
-        members.toFlux().flatMap { member -> rAllowed.toFlux().flatMap(member::addRole) },
-        channel.sendSuccess(text).asMono(),
-        channel.jda.logStaff(subject, "Add Role", text, Colors.ROLE_ADD).asMono()
-    )
+    subject: User, channel: MessageChannel, members: List<Member>,
+    rAllowed: List<Role>, rIgnored: List<Role>
+) = roleAction(subject, channel, members, rAllowed, rIgnored, "Role Add", Colors.ROLE_ADD) {
+    rAllowed.toFlux().flatMap(it::addRole)
 }
 
 fun removeRole(
+    subject: User, channel: MessageChannel, members: List<Member>,
+    rAllowed: List<Role>, rIgnored: List<Role>
+) = roleAction(subject, channel, members, rAllowed, rIgnored, "Role Remove", Colors.ROLE_REMOVE) {
+    rAllowed.toFlux().flatMap(it::removeRole)
+}
+
+fun roleAction(
     subject: User,
     channel: MessageChannel,
     members: List<Member>,
     rAllowed: List<Role>,
-    rDenied: List<Role>
+    rIgnored: List<Role>,
+    title: String,
+    color: Int,
+    actionWithMember: (Member) -> Publisher<out Any>
 ): Flux<out Any> {
     val sUsers = members.joinDefault()
     val sAllowed = rAllowed.joinDefault()
-    val sDenied = rDenied.joinDefault()
+    val sIgnored = rIgnored.joinDefault()
 
     val text = ArrayList<String>(3)
         .apply { add("Users: $sUsers") }
-        .apply { if (sAllowed.isNotEmpty()) add("Removed Roles: $sAllowed") }
-        .apply { if (sDenied.isNotEmpty()) add("Not Removed Roles: $sDenied") }
+        .apply { if (sAllowed.isNotEmpty()) add("Roles: $sAllowed") }
+        .apply { if (sIgnored.isNotEmpty()) add("Ignored Roles: $sIgnored") }
         .joinToString("\n")
 
-    log.info("[DelRole] ${subject.asMention} - [Users] $sUsers - [Allowed] $sAllowed - [Denied] $sDenied")
+    log.info("[${title}] ${subject.asMention} - [Users] $sUsers - [Allowed] $sAllowed - [Ignored] $sIgnored")
 
     return Flux.concat(
-        members.toFlux().flatMap { member -> rAllowed.toFlux().flatMap(member::removeRole) },
-        channel.sendSuccess(text).asMono(),
-        channel.jda.logStaff(subject, "Del Role", text, Colors.ROLE_DEL).asMono()
+        members.toFlux().flatMap(actionWithMember),
+        channel.sendSuccess(title, text).asMono(),
+        channel.jda.logStaff(subject, title, text, color).asMono()
     )
 }

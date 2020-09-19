@@ -6,7 +6,7 @@ import team.false_.wtbot.exceptions.EmptyMentionsException
 import team.false_.wtbot.handlers.commands.abstract.StaffCommand
 import team.false_.wtbot.utils.addRole
 import team.false_.wtbot.utils.mentionedRolesAllowed
-import team.false_.wtbot.utils.mentionedRolesDenied
+import team.false_.wtbot.utils.mentionedRolesIgnored
 
 class RoleAddCommand : StaffCommand() {
     override fun exec(it: Message): Flux<out Any> {
@@ -18,7 +18,7 @@ class RoleAddCommand : StaffCommand() {
                 it.channel,
                 it.mentionedMembers,
                 it.mentionedRolesAllowed,
-                it.mentionedRolesDenied
+                it.mentionedRolesIgnored
             )
     }
 }

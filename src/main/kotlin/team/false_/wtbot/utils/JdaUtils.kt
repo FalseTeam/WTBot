@@ -10,22 +10,49 @@ import team.false_.wtbot.config.Colors
 import team.false_.wtbot.config.Config
 import team.false_.wtbot.exceptions.WTBotException
 import java.time.Instant
+import java.time.temporal.TemporalAccessor
 
 /*
 JDA Class
  */
 
+val JDA.guild get() = this.getGuildById(Config.GUILD)!!
+val JDA.voiceLogs get() = this.getTextChannelById(Channels.VOICE_CHANNELS)!!
 val JDA.staffLogs get() = this.getTextChannelById(Channels.STAFF_LOGS)!!
-val JDA.devLogs get() = this.getTextChannelById(Channels.EXCEPTION_LOGS)!!
+val JDA.devLogs get() = this.getTextChannelById(Channels.NULL)!!
 
-fun JDA.logStaff(subject: User, title: String, description: String, color: Int? = null): MessageAction {
+fun JDA.logVoice(
+    subject: User? = null,
+    title: String,
+    description: String,
+    color: Int? = null,
+    temporal: TemporalAccessor = Instant.now()
+): MessageAction {
+    return this.voiceLogs.sendMessage(
+        EmbedBuilder()
+            .setTitle(title)
+            .apply { color?.let(this::setColor) }
+            .setDescription(description)
+            .apply { subject?.let { setFooter(it.asTag, it.avatarUrl) } }
+            .setTimestamp(temporal)
+            .build()
+    )
+}
+
+fun JDA.logStaff(
+    subject: User,
+    title: String,
+    description: String,
+    color: Int? = null,
+    temporal: TemporalAccessor = Instant.now()
+): MessageAction {
     return this.staffLogs.sendMessage(
         EmbedBuilder()
             .setTitle(title)
             .apply { color?.let(this::setColor) }
             .setDescription(description)
             .setFooter(subject.asTag, subject.avatarUrl)
-            .setTimestamp(Instant.now())
+            .setTimestamp(temporal)
             .build()
     )
 }
@@ -57,7 +84,7 @@ Message Class
 
 val Message.mentionedRolesAllowed
     get() = this.mentionedRoles.filter { this.member!!.accessLevel >= it.requiredAccessLevel }
-val Message.mentionedRolesDenied
+val Message.mentionedRolesIgnored
     get() = this.mentionedRoles.filter { this.member!!.accessLevel < it.requiredAccessLevel }
 
 /*
@@ -70,10 +97,11 @@ val Role.requiredAccessLevel get() = Config.requiredAccessLevel(this.idLong)
 MessageChannel Class
  */
 
-fun MessageChannel.sendSuccess(text: String): MessageAction {
+fun MessageChannel.sendSuccess(title: String, text: String): MessageAction {
     return this.sendMessage(
         EmbedBuilder()
             .setColor(Colors.SUCCESS)
+            .setTitle(title)
             .setDescription(text)
             .build()
     )

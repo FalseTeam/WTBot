@@ -3,6 +3,8 @@ package team.false_.wtbot.config
 import team.false_.wtbot.entities.AccessLevel
 
 object Config {
+    const val GUILD = 381730844588638208
+
     fun accessLevel(roleId: Long) = when (roleId) {
         Roles.ADMINISTRATOR -> AccessLevel.ADMINISTRATOR
         Roles.STAFF -> AccessLevel.STAFF

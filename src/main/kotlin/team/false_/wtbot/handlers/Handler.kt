@@ -1,6 +1,7 @@
 package team.false_.wtbot.handlers
 
 import club.minnced.jda.reactor.ReactiveEventManager
+import net.dv8tion.jda.api.JDA
 import reactor.core.Disposable
 
 abstract class Handler {
@@ -13,4 +14,6 @@ abstract class Handler {
     }
 
     abstract fun subscribe(): Disposable
+
+    open fun onReady(jda: JDA) {}
 }

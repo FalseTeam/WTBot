@@ -3,8 +3,9 @@
 package team.false_.wtbot
 
 import org.apache.logging.log4j.LogManager
+import org.apache.logging.log4j.Logger
 
-internal val log = LogManager.getLogger()
+val log: Logger = LogManager.getLogger()
 
 fun main() {
     val worker = Worker(System.getenv("TOKEN"))
