@@ -17,9 +17,11 @@ JDA Class
  */
 
 val JDA.guild get() = this.getGuildById(Config.GUILD)!!
-val JDA.voiceLogs get() = this.getTextChannelById(Channels.VOICE_CHANNELS)!!
-val JDA.staffLogs get() = this.getTextChannelById(Channels.STAFF_LOGS)!!
-val JDA.devLogs get() = this.getTextChannelById(Channels.NULL)!!
+val JDA.logVoice get() = this.getTextChannelById(Channels.LOG_VOICE)!!
+val JDA.logStaff get() = this.getTextChannelById(Channels.LOG_STAFF)!!
+val JDA.devInput get() = this.getTextChannelById(Channels.DEV_INPUT)!!
+val JDA.devOutput get() = this.getTextChannelById(Channels.DEV_OUTPUT)!!
+val JDA.devError get() = this.getTextChannelById(Channels.DEV_ERROR)!!
 
 fun JDA.logVoice(
     subject: User? = null,
@@ -28,7 +30,7 @@ fun JDA.logVoice(
     color: Int? = null,
     temporal: TemporalAccessor = Instant.now()
 ): MessageAction {
-    return this.voiceLogs.sendMessage(
+    return this.logVoice.sendMessage(
         EmbedBuilder()
             .setTitle(title)
             .apply { color?.let(this::setColor) }
@@ -46,7 +48,7 @@ fun JDA.logStaff(
     color: Int? = null,
     temporal: TemporalAccessor = Instant.now()
 ): MessageAction {
-    return this.staffLogs.sendMessage(
+    return this.logStaff.sendMessage(
         EmbedBuilder()
             .setTitle(title)
             .apply { color?.let(this::setColor) }
@@ -58,7 +60,7 @@ fun JDA.logStaff(
 }
 
 fun JDA.logError(e: Throwable): MessageAction {
-    return this.devLogs.sendMessage(
+    return this.devError.sendMessage(
         EmbedBuilder()
             .setColor(Colors.ERROR)
             .setTitle("ERROR")
@@ -97,7 +99,7 @@ val Role.requiredAccessLevel get() = Config.requiredAccessLevel(this.idLong)
 MessageChannel Class
  */
 
-fun MessageChannel.sendSuccess(title: String, text: String): MessageAction {
+fun MessageChannel.sendSuccess(title: String, text: String? = null): MessageAction {
     return this.sendMessage(
         EmbedBuilder()
             .setColor(Colors.SUCCESS)
@@ -130,4 +132,5 @@ fun MessageChannel.sendInternalError(): MessageAction {
 List Class
  */
 
-fun List<IMentionable>.joinDefault() = this.joinToString(", ") { it.asMention }
+fun List<IMentionable>.joinCommaSpace() = this.joinToString(", ") { it.asMention }
+fun List<IMentionable>.joinNewLine() = this.joinToString("\n") { it.asMention }

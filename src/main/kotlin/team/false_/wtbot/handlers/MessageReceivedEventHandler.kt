@@ -12,7 +12,7 @@ import team.false_.wtbot.utils.subscribeOnAnyWithHandleError
 
 class MessageReceivedEventHandler : Handler() {
     private val commands = mapOf(
-        Channels.BOT to mapOf(
+        Channels.CHAT_BOT to mapOf(
             "addrole" to RoleAddCommand(),
             "cb" to BanChatCommand(),
             "vb" to BanVoiceCommand(),
@@ -22,12 +22,13 @@ class MessageReceivedEventHandler : Handler() {
             "unvb" to UnBanVoiceCommand(),
             "unban" to UnBanChatVoiceCommand(),
         ),
-        Channels.INPUT to mapOf(
+        Channels.DEV_INPUT to mapOf(
             "color" to ColorCommand(),
             "random" to ColorRandomCommand(),
             "accesslevel" to AccessLevelCommand(),
             "activity" to ActivityCommand(),
             "status" to StatusCommand(),
+            "purge" to PurgeCommand(),
         ),
     )
 

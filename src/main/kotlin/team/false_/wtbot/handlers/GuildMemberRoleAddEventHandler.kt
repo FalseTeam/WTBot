@@ -8,7 +8,7 @@ import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import team.false_.wtbot.config.Colors
 import team.false_.wtbot.log
-import team.false_.wtbot.utils.joinDefault
+import team.false_.wtbot.utils.joinCommaSpace
 import team.false_.wtbot.utils.logStaff
 import team.false_.wtbot.utils.subscribeOnAnyWithHandleError
 import java.time.Instant
@@ -23,9 +23,9 @@ class GuildMemberRoleAddEventHandler : Handler() {
                 if (entry.user!!.isBot)
                     Mono.empty()
                 else {
-                    log.info("[Role Add Manual] ${entry.user!!.asMention} - [User] ${it.member.asMention} - [Roles] ${it.roles.joinDefault()}")
+                    log.info("[Role Add Manual] ${entry.user!!.asMention} - [User] ${it.member.asMention} - [Roles] ${it.roles.joinCommaSpace()}")
                     it.jda.logStaff(
-                        entry.user!!, "Role Add Manual", "${it.member.asMention} ${it.roles.joinDefault()}",
+                        entry.user!!, "Role Add Manual", "${it.member.asMention} ${it.roles.joinCommaSpace()}",
                         Colors.ROLE_ADD, now
                     ).asMono()
                 }

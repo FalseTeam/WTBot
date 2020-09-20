@@ -35,9 +35,9 @@ fun roleAction(
     color: Int,
     actionWithMember: (Member) -> Publisher<out Any>
 ): Flux<out Any> {
-    val sUsers = members.joinDefault()
-    val sAllowed = rAllowed.joinDefault()
-    val sIgnored = rIgnored.joinDefault()
+    val sUsers = members.joinCommaSpace()
+    val sAllowed = rAllowed.joinCommaSpace()
+    val sIgnored = rIgnored.joinCommaSpace()
 
     val text = ArrayList<String>(3)
         .apply { add("Users: $sUsers") }
