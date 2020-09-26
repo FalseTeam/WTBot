@@ -64,7 +64,7 @@ fun JDA.logOutput(
     description: String? = null,
     footer: String? = null,
     color: Int? = null,
-    timestamp: Boolean = false
+    timestamp: Boolean = true
 ): MessageAction {
     return this.devOutput.sendMessage(
         EmbedBuilder()
