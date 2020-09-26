@@ -50,7 +50,7 @@ class Worker constructor(token: String) {
     }
 
     fun shutdown() {
-        jda.logOutput(footer = "Lifecycle", title = "Shutdown", color = Colors.WARN).asMono()
-            .subscribe { jda.shutdown() }
+        jda.logOutput(footer = "Lifecycle", title = "Shutdown", color = Colors.WARN).asMono().block()
+        jda.shutdown()
     }
 }
