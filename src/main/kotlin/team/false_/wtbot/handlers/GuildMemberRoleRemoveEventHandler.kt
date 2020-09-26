@@ -19,8 +19,10 @@ class GuildMemberRoleRemoveEventHandler : Handler() {
             Flux.just(event).flatMap {
                 val now = Instant.now()
                 val entry = it.guild.retrieveAuditLogs().type(ActionType.MEMBER_ROLE_UPDATE)
-                    .first { e -> e.targetIdLong == it.member.idLong }
-                if (entry.user!!.isBot)
+                    .firstOrNull { e -> e.targetIdLong == it.member.idLong }
+                if (entry == null)
+                    log.warn("[Role Remove Without Audit Log] ${it.user.asMention} - ${it.roles.joinCommaSpace()}")
+                if (entry?.user!!.isBot)
                     Mono.empty()
                 else {
                     log.info("[Role Remove Manual] ${entry.user!!.asMention} - [User] ${it.member.asMention} - [Roles] ${it.roles.joinCommaSpace()}")
