@@ -32,8 +32,8 @@ fun JDA.logVoice(
 ): MessageAction {
     return this.logVoice.sendMessage(
         EmbedBuilder()
-            .setTitle(title)
             .apply { color?.let(this::setColor) }
+            .setTitle(title)
             .setDescription(description)
             .apply { subject?.let { setFooter(it.asTag, it.avatarUrl) } }
             .setTimestamp(temporal)
@@ -50,11 +50,22 @@ fun JDA.logStaff(
 ): MessageAction {
     return this.logStaff.sendMessage(
         EmbedBuilder()
-            .setTitle(title)
             .apply { color?.let(this::setColor) }
+            .setTitle(title)
             .setDescription(description)
             .setFooter(subject.asTag, subject.avatarUrl)
             .setTimestamp(temporal)
+            .build()
+    )
+}
+
+fun JDA.logOutput(title: String? = null, description: String? = null, color: Int? = null): MessageAction {
+    return this.devError.sendMessage(
+        EmbedBuilder()
+            .apply { color?.let(this::setColor) }
+            .apply { title?.let(this::setTitle) }
+            .apply { description?.let(this::setDescription) }
+            .setTimestamp(Instant.now())
             .build()
     )
 }
