@@ -1,8 +1,10 @@
 package team.false_.wtbot
 
 import club.minnced.jda.reactor.ReactiveEventManager
+import club.minnced.jda.reactor.on
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.JDABuilder
+import net.dv8tion.jda.api.events.ShutdownEvent
 import net.dv8tion.jda.api.requests.GatewayIntent
 import net.dv8tion.jda.api.utils.MemberCachePolicy
 import net.dv8tion.jda.api.utils.cache.CacheFlag
@@ -44,11 +46,11 @@ class Worker constructor(token: String) {
         jda.awaitReady()
         handlers.forEach { it.onReady(jda) }
         handlers.forEach { it.subscribe() }
-        jda.logOutput(footer = "Lifecycle", title = "Started", color = Colors.SUCCESS).submit()
+        jda.logOutput(footer = "Lifecycle", description = "Started", color = Colors.SUCCESS).submit()
     }
 
     fun shutdown() {
-        jda.logOutput(footer = "Lifecycle", title = "Shutdown", color = Colors.WARN).submit()
+        jda.logOutput(footer = "Lifecycle", description = "Shutdown", color = Colors.WARN).submit()
         jda.shutdown()
     }
 }
