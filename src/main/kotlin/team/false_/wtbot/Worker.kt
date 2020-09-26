@@ -46,11 +46,11 @@ class Worker constructor(token: String) {
         jda.awaitReady()
         handlers.forEach { it.onReady(jda) }
         handlers.forEach { it.subscribe() }
-        jda.logOutput(footer = "Lifecycle", description = "Started", color = Colors.SUCCESS).submit()
+        jda.logOutput(footer = "Lifecycle", title = "Started", color = Colors.SUCCESS).submit().join()
     }
 
     fun shutdown() {
-        jda.logOutput(footer = "Lifecycle", description = "Shutdown", color = Colors.WARN).submit()
+        jda.logOutput(footer = "Lifecycle", title = "Shutdown", color = Colors.WARN).submit().join()
         jda.shutdown()
     }
 }
