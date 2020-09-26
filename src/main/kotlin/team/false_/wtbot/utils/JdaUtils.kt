@@ -59,6 +59,18 @@ fun JDA.logStaff(
     )
 }
 
+fun JDA.logWarn(description: String, footer: String? = null): MessageAction {
+    return this.devError.sendMessage(
+        EmbedBuilder()
+            .setColor(Colors.WARN)
+            .setTitle("WARN")
+            .setDescription(description)
+            .apply { footer?.let(this::setFooter) }
+            .setTimestamp(Instant.now())
+            .build()
+    )
+}
+
 fun JDA.logError(e: Throwable): MessageAction {
     return this.devError.sendMessage(
         EmbedBuilder()
@@ -112,7 +124,7 @@ fun MessageChannel.sendSuccess(title: String, text: String? = null): MessageActi
 fun MessageChannel.sendWarning(e: WTBotException): MessageAction {
     return this.sendMessage(
         EmbedBuilder()
-            .setColor(Colors.WARNING)
+            .setColor(Colors.WARN)
             .setTitle(e.title)
             .setDescription(e.localizedMessage)
             .build()

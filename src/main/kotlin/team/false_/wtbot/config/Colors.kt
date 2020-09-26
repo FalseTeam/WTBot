@@ -21,7 +21,7 @@ object Colors {
 
     // Response
     const val SUCCESS = GREEN
-    const val WARNING = YELLOW
+    const val WARN = YELLOW
     const val ERROR = RED
 
     // Logging

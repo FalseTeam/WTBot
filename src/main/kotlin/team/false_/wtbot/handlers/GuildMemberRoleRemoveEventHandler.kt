@@ -10,6 +10,7 @@ import team.false_.wtbot.config.Colors
 import team.false_.wtbot.log
 import team.false_.wtbot.utils.joinCommaSpace
 import team.false_.wtbot.utils.logStaff
+import team.false_.wtbot.utils.logWarn
 import team.false_.wtbot.utils.subscribeOnAnyWithHandleError
 import java.time.Instant
 
@@ -20,9 +21,11 @@ class GuildMemberRoleRemoveEventHandler : Handler() {
                 val now = Instant.now()
                 val entry = it.guild.retrieveAuditLogs().type(ActionType.MEMBER_ROLE_UPDATE)
                     .firstOrNull { e -> e.targetIdLong == it.member.idLong }
-                if (entry == null)
+                if (entry == null) {
                     log.warn("[Role Remove Without Audit Log] ${it.user.asMention} - ${it.roles.joinCommaSpace()}")
-                if (entry?.user!!.isBot)
+                    return@flatMap it.jda.logWarn(it.toString(), "RoleRemoveWoAuditLog").asMono()
+                }
+                if (entry.user!!.isBot)
                     Mono.empty()
                 else {
                     log.info("[Role Remove Manual] ${entry.user!!.asMention} - [User] ${it.member.asMention} - [Roles] ${it.roles.joinCommaSpace()}")
