@@ -60,7 +60,7 @@ fun JDA.logStaff(
 }
 
 fun JDA.logOutput(title: String? = null, description: String? = null, color: Int? = null): MessageAction {
-    return this.devError.sendMessage(
+    return this.devOutput.sendMessage(
         EmbedBuilder()
             .apply { color?.let(this::setColor) }
             .apply { title?.let(this::setTitle) }
