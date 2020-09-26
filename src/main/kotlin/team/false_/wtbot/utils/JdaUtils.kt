@@ -59,13 +59,20 @@ fun JDA.logStaff(
     )
 }
 
-fun JDA.logOutput(title: String? = null, description: String? = null, color: Int? = null): MessageAction {
+fun JDA.logOutput(
+    title: String? = null,
+    description: String? = null,
+    footer: String? = null,
+    color: Int? = null,
+    timestamp: Boolean = false
+): MessageAction {
     return this.devOutput.sendMessage(
         EmbedBuilder()
             .apply { color?.let(this::setColor) }
             .apply { title?.let(this::setTitle) }
             .apply { description?.let(this::setDescription) }
-            .setTimestamp(Instant.now())
+            .apply { footer?.let(this::setFooter) }
+            .apply { if (timestamp) this.setTimestamp(Instant.now()) }
             .build()
     )
 }

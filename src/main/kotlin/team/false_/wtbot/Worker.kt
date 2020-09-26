@@ -8,7 +8,6 @@ import net.dv8tion.jda.api.utils.MemberCachePolicy
 import net.dv8tion.jda.api.utils.cache.CacheFlag
 import team.false_.wtbot.config.Colors
 import team.false_.wtbot.handlers.*
-import team.false_.wtbot.utils.devOutput
 import team.false_.wtbot.utils.logOutput
 import kotlin.reflect.full.createInstance
 
@@ -45,11 +44,11 @@ class Worker constructor(token: String) {
         jda.awaitReady()
         handlers.forEach { it.onReady(jda) }
         handlers.forEach { it.subscribe() }
-        jda.logOutput("Lifecycle", "Started", Colors.SUCCESS).submit()
+        jda.logOutput(footer = "Lifecycle", title = "Started", color = Colors.SUCCESS).submit()
     }
 
     fun shutdown() {
-        jda.logOutput("Lifecycle", "Shutdown", Colors.WARN).submit()
+        jda.logOutput(footer = "Lifecycle", title = "Shutdown", color = Colors.WARN).submit()
         jda.shutdown()
     }
 }
