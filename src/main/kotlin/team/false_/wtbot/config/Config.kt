@@ -21,6 +21,7 @@ object Config {
         Roles.K620 -> AccessLevel.ADMINISTRATOR
         Roles.MEDIA -> AccessLevel.STAFF
         Roles.ACTIVE -> AccessLevel.STAFF
+        Roles.GULAG -> AccessLevel.STAFF
         Roles.CHAT_BANNED -> AccessLevel.JUNIOR
         Roles.VOICE_BANNED -> AccessLevel.JUNIOR
         else -> AccessLevel.UNREACHABLE
