@@ -1,5 +1,6 @@
 package team.false_.wtbot.handlers
 
+import club.minnced.jda.reactor.ReactiveEventManager
 import club.minnced.jda.reactor.asMono
 import net.dv8tion.jda.api.audit.ActionType
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceGuildDeafenEvent
@@ -10,7 +11,7 @@ import team.false_.wtbot.utils.logVoice
 import team.false_.wtbot.utils.subscribeOnAnyWithHandleError
 import java.time.Instant
 
-class GuildVoiceGuildDeafenEventHandler : Handler() {
+class GuildVoiceGuildDeafenEventHandler(manager: ReactiveEventManager) : Handler(manager) {
     override fun subscribe(): Disposable {
         return manager.subscribeOnAnyWithHandleError<GuildVoiceGuildDeafenEvent> { event ->
             Flux.just(event).flatMap {

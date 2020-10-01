@@ -42,7 +42,7 @@ fun JDA.logVoice(
 }
 
 fun JDA.logStaff(
-    subject: User,
+    subject: User? = null,
     title: String,
     description: String,
     color: Int? = null,
@@ -53,7 +53,7 @@ fun JDA.logStaff(
             .apply { color?.let(this::setColor) }
             .setTitle(title)
             .setDescription(description)
-            .setFooter(subject.asTag, subject.avatarUrl)
+            .apply { if (subject != null) setFooter(subject.asTag, subject.avatarUrl) }
             .setTimestamp(temporal)
             .build()
     )

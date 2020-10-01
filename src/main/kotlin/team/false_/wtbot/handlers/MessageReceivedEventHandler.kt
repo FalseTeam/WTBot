@@ -1,5 +1,6 @@
 package team.false_.wtbot.handlers
 
+import club.minnced.jda.reactor.ReactiveEventManager
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent
 import reactor.core.Disposable
 import reactor.core.publisher.Flux
@@ -10,7 +11,7 @@ import team.false_.wtbot.handlers.commands.roles.*
 import team.false_.wtbot.utils.accessLevel
 import team.false_.wtbot.utils.subscribeOnAnyWithHandleError
 
-class MessageReceivedEventHandler : Handler() {
+class MessageReceivedEventHandler(manager: ReactiveEventManager) : Handler(manager) {
     private val commands = mapOf(
         Channels.CHAT_BOT to mapOf(
             "addrole" to RoleAddCommand(),

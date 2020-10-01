@@ -1,5 +1,6 @@
 package team.false_.wtbot.handlers
 
+import club.minnced.jda.reactor.ReactiveEventManager
 import club.minnced.jda.reactor.asMono
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.audit.ActionType
@@ -16,7 +17,7 @@ import team.false_.wtbot.utils.logVoice
 import team.false_.wtbot.utils.subscribeOnAnyWithHandleError
 import java.time.Instant
 
-class GuildVoiceLeaveEventHandler : Handler() {
+class GuildVoiceLeaveEventHandler(manager: ReactiveEventManager) : Handler(manager) {
     private var entries = ArrayList<AuditLogEntry>()
 
     override fun onReady(jda: JDA) {

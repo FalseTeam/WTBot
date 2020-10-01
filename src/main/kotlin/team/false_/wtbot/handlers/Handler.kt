@@ -4,15 +4,7 @@ import club.minnced.jda.reactor.ReactiveEventManager
 import net.dv8tion.jda.api.JDA
 import reactor.core.Disposable
 
-abstract class Handler {
-    protected lateinit var manager: ReactiveEventManager
-        private set
-
-    fun inject(manager: ReactiveEventManager): Handler {
-        this.manager = manager
-        return this
-    }
-
+abstract class Handler(protected val manager: ReactiveEventManager) {
     abstract fun subscribe(): Disposable
 
     open fun onReady(jda: JDA) {}

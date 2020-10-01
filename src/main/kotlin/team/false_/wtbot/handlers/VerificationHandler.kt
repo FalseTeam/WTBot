@@ -1,5 +1,6 @@
 package team.false_.wtbot.handlers
 
+import club.minnced.jda.reactor.ReactiveEventManager
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent
 import reactor.core.Disposable
 import reactor.core.publisher.Flux
@@ -8,7 +9,7 @@ import team.false_.wtbot.config.Roles
 import team.false_.wtbot.utils.addRole
 import team.false_.wtbot.utils.subscribeOnAnyWithHandleError
 
-class VerificationHandler : Handler() {
+class VerificationHandler(manager: ReactiveEventManager) : Handler(manager) {
     override fun subscribe(): Disposable {
         return manager.subscribeOnAnyWithHandleError<MessageReactionAddEvent> { event ->
             Flux.just(event)

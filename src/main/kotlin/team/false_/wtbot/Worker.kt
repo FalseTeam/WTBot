@@ -1,26 +1,33 @@
 package team.false_.wtbot
 
-import club.minnced.jda.reactor.ReactiveEventManager
-import club.minnced.jda.reactor.asMono
-import club.minnced.jda.reactor.on
+import club.minnced.jda.reactor.createManager
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.JDABuilder
-import net.dv8tion.jda.api.events.ShutdownEvent
 import net.dv8tion.jda.api.requests.GatewayIntent
 import net.dv8tion.jda.api.utils.MemberCachePolicy
 import net.dv8tion.jda.api.utils.cache.CacheFlag
-import team.false_.wtbot.config.Colors
+import reactor.core.scheduler.Schedulers
 import team.false_.wtbot.handlers.*
-import team.false_.wtbot.utils.logOutput
-import kotlin.reflect.full.createInstance
+import team.false_.wtbot.utils.createInstance
+import team.false_.wtbot.utils.doesOverride
+import java.util.concurrent.Executors
+import java.util.concurrent.ForkJoinPool
+import kotlin.concurrent.thread
 
 class Worker constructor(token: String) {
     private val jda: JDA
 
     init {
-        val manager = ReactiveEventManager()
+        var count = 0
+        val executor = Executors.newScheduledThreadPool(ForkJoinPool.getCommonPoolParallelism()) {
+            thread(start = false, block = it::run, name = "jda-thread-${count++}", isDaemon = false)
+        }
+        val manager = createManager {
+            scheduler = Schedulers.fromExecutor(executor)
+            isDispose = true
+        }
 
-        val handlers = setOf(
+        val handlers = listOf(
             ReadyEventHandler::class,
             VerificationHandler::class,
             MessageReceivedEventHandler::class,
@@ -31,9 +38,10 @@ class Worker constructor(token: String) {
             GuildVoiceLeaveEventHandler::class,
             GuildVoiceGuildMuteEventHandler::class,
             GuildVoiceGuildDeafenEventHandler::class,
-        ).map { it.createInstance() }
+            StatusChangeEventHandler::class,
+        ).map { it.createInstance(manager) }
 
-        handlers.forEach { it.inject(manager) }
+        handlers.filterNot { it::class.doesOverride(it::onReady) }.forEach(Handler::subscribe)
 
         jda = JDABuilder.createDefault(token)
             .setEventManager(manager)
@@ -46,11 +54,6 @@ class Worker constructor(token: String) {
 
         jda.awaitReady()
         handlers.forEach { it.onReady(jda) }
-        handlers.forEach { it.subscribe() }
-    }
-
-    fun shutdown() {
-        jda.logOutput(footer = "Lifecycle", title = "Shutdown", color = Colors.WARN).asMono().block()
-        jda.shutdown()
+        handlers.filter { it::class.doesOverride(it::onReady) }.forEach(Handler::subscribe)
     }
 }
